@@ -1,0 +1,18 @@
+{
+  "name": "telegraf-bot-testing-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "telegraf": "^3.38.0"
+  },
+  "devDependencies": {
+    "jest": "^26.4.2",
+    "node-mocks-http": "^1.9.0"
+  }
+}
