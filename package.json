@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "nock": "^13.0.4",
     "telegraf": "^3.38.0"
   },
   "devDependencies": {

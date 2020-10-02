@@ -1,92 +1,36 @@
-const httpMocks = require('node-mocks-http')
-const nock = require('nock')
+const TestClient = require('./test-client')
 const bot = require('../src/bot')
 
+let client
+
+beforeEach(function() {
+  client = new TestClient(bot)
+})
+
 test('should reply welcome', async () => {
-  const response = httpMocks.createResponse();
+  await client.sendCommand('/start')
 
-  await bot.handleUpdate({
-    update_id: 1,
-    message: {
-      message_id: 1,
-      text: '/start',
-      entities: [
-        {
-          type: 'bot_command',
-          offset: 0,
-          length: 6,
-        }
-      ],
-      chat: {
-        id: 1,
-      },
-    },
-  }, response)
-
-  const data = response._getJSONData()
-  expect(data.text).toBe('Welcome');
+  expect(client.received[0].data.text).toBe('Welcome')
 });
 
-test('should reply Hey there', async () => {
-  const response = httpMocks.createResponse();
+test('should reply two messages', async () => {
+  await client.sendText('hi')
 
-  await bot.handleUpdate({
-    update_id: 1,
-    message: {
-      message_id: 1,
-      text: 'hi',
-      chat: {
-        id: 1,
-      },
-    },
-  }, response)
-
-  const data = response._getJSONData()
-  expect(data.text).toBe('Hey there');
+  expect(client.received[0].data.text).toBe('Hey there');
+  expect(client.received[1].data.text).toBe('How are you?');
 });
 
 test('should reply Send me a sticker', async () => {
-  const response = httpMocks.createResponse();
+  await client.sendCommand('/help')
 
-  await bot.handleUpdate({
-    update_id: 1,
-    message: {
-      message_id: 1,
-      text: '/help',
-      entities: [
-        {
-          type: 'bot_command',
-          offset: 0,
-          length: 5,
-        }
-      ],
-      chat: {
-        id: 1,
-      },
-    },
-  }, response)
-
-  const data = response._getJSONData()
-  expect(data.text).toBe('Send me a sticker');
+  expect(client.received[0].data.text).toBe('Send me a sticker');
 });
 
 test('should reply 👍', async () => {
-  const response = httpMocks.createResponse();
+  await client.sendSticker({
+    file_id: 'id',
+    file_unique_id: 'id',
+  })
 
-  await bot.handleUpdate({
-    update_id: 1,
-    message: {
-      message_id: 1,
-      sticker: {
-        file_id: 'id',
-        file_unique_id: 'id',
-      },
-      chat: {
-        id: 1,
-      },
-    },
-  }, response)
-
-  const data = response._getJSONData()
-  expect(data.text).toBe('👍');
+  expect(client.received[0].data.text).toBe('👍');
 });
